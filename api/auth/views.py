@@ -5,11 +5,11 @@ from flask.views import MethodView
 from api import bcrypt, db
 from api.models import User, BlacklistToken
 
-auth_blueprint = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth_bp', __name__)
 
 
-@auth.route('/api/auth/register', methods=['POST'])
-def RegisterAPIpost(self):
+@auth_bp.route('/api/auth/register', methods=['POST'])
+def RegisterAPIpost():
     """
     User Registration Resource
     """
@@ -48,8 +48,8 @@ def RegisterAPIpost(self):
         }
         return make_response(jsonify(responseObject)), 202
 
-@auth.route('/api/auth/login', methods=['POST'])
-def LoginAPIpost(self):
+@auth_bp.route('/api/auth/login', methods=['POST'])
+def LoginAPIpost():
     """
     User Login Resource
     """
@@ -85,8 +85,8 @@ def LoginAPIpost(self):
         }
         return make_response(jsonify(responseObject)), 500
 
-@auth.route('/api/auth/status', methods=['GET'])
-def UserAPIget(self):
+@auth_bp.route('/api/auth/status', methods=['GET'])
+def UserAPIget():
     """
     User Resource
     """
@@ -129,8 +129,8 @@ def UserAPIget(self):
         }
         return make_response(jsonify(responseObject)), 401
 
-@auth.route('/api/auth/logout', methods=['POST'])
-def LogoutAPIpost(self):
+@auth_bp.route('/api/auth/logout', methods=['POST'])
+def LogoutAPIpost():
     """
     Logout Resource
     """
