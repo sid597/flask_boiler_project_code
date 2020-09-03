@@ -30,6 +30,6 @@ def student_update_student_progress():
     return "update_student_progress"
 
 @student_bp.route('blacklist', methods=['POST'])
-def student_get_cv():
+def student_blacklist():
     return 'blacklisted'
 

@@ -2,13 +2,21 @@
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
-from api import bcrypt, db
+from api import bcrypt, db, jwt
 from api.models import User, BlacklistToken
 
-auth_bp = Blueprint('auth_bp', __name__)
 
+auth_bp = Blueprint('auth_bp', __name__, url_prefix='/api/auth/')
 
-@auth_bp.route('/api/auth/register', methods=['POST'])
+@auth_bp.route('/')
+def no():
+    responseObject = {
+            'status': 'fail',
+            'message': 'User already exists. Please Log in.',
+        }
+    return responseObject
+
+@auth_bp.route('register', methods=['POST'])
 def RegisterAPIpost():
     """
     User Registration Resource
@@ -16,6 +24,7 @@ def RegisterAPIpost():
     
     # get the post data
     post_data = request.get_json()
+    print(post_data)
     # check if user already exists
     user = User.query.filter_by(email=post_data.get('email')).first()
     if not user:
@@ -29,13 +38,15 @@ def RegisterAPIpost():
             db.session.commit()
             # generate the auth token
             auth_token = user.encode_auth_token(user.id)
+            print(auth_token)
             responseObject = {
                 'status': 'success',
                 'message': 'Successfully registered.',
-                'auth_token': auth_token.decode()
+                'auth_token': auth_token.decode_auth_token()
             }
             return make_response(jsonify(responseObject)), 201
         except Exception as e:
+            print(e)
             responseObject = {
                 'status': 'fail',
                 'message': 'Some error occurred. Please try again.'
@@ -48,7 +59,7 @@ def RegisterAPIpost():
         }
         return make_response(jsonify(responseObject)), 202
 
-@auth_bp.route('/api/auth/login', methods=['POST'])
+@auth_bp.route('login', methods=['POST'])
 def LoginAPIpost():
     """
     User Login Resource
@@ -85,7 +96,7 @@ def LoginAPIpost():
         }
         return make_response(jsonify(responseObject)), 500
 
-@auth_bp.route('/api/auth/status', methods=['GET'])
+@auth_bp.route('status', methods=['GET'])
 def UserAPIget():
     """
     User Resource
@@ -129,7 +140,7 @@ def UserAPIget():
         }
         return make_response(jsonify(responseObject)), 401
 
-@auth_bp.route('/api/auth/logout', methods=['POST'])
+@auth_bp.route('logout', methods=['POST'])
 def LogoutAPIpost():
     """
     Logout Resource

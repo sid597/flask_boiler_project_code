@@ -10,15 +10,13 @@ class BaseConfig:
     DEBUG = False
     BCRYPT_LOG_ROUNDS = 13
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-
+    JWT_SECRET_KEY= '2489Ysdf#RYAR(*#Q$)#@$WEHRFsdkfh*((#@$fj'
+    JWT_ALGORITHM='HS256'
 class DevelopmentConfig(BaseConfig):
     """Development configuration."""
     DEBUG = True
     BCRYPT_LOG_ROUNDS = 4
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-    'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
-
+    SQLALCHEMY_DATABASE_URI = os.getenv('LOCAL_DATABASE_URI')
 class TestingConfig(BaseConfig):
     """Testing configuration."""
     DEBUG = True
@@ -26,8 +24,6 @@ class TestingConfig(BaseConfig):
     BCRYPT_LOG_ROUNDS = 4
     SQLALCHEMY_DATABASE_URI = mysql_local_base + database_name + '_test'
     PRESERVE_CONTEXT_ON_EXCEPTION = False
-
-
 class ProductionConfig(BaseConfig):
     """Production configuration."""
     SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
